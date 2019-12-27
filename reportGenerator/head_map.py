@@ -205,12 +205,17 @@ class ExcelDataProcessing:
 
     def dataMaping(self, tableData, dataKeyMap):
         headKeys = list(dataKeyMap.keys())
+
         for item in tableData:
-            for i in headKeys:
-                if i in item:
-                    self.dataKeyMap[i].append(item[i])
+            for key in headKeys:
+                self.dataKeyMap[key] = list()
+
+        for item in tableData:
+            for key in headKeys:
+                if key in item:
+                    self.dataKeyMap[key].append(item[key])
                 else:
-                    self.dataKeyMap[i].append('')
+                    self.dataKeyMap[key].append('')
 
         dataframe = pd.DataFrame.from_dict(self.dataKeyMap)
         return dataframe

@@ -134,47 +134,55 @@ class Report:
         # grab the active worksheet
         ws = wb.active
         max_row = -1
+
         for i in self.header:
-            cell = i['column']
-            title = i['title']
+            try:
+                cell = i['column']
+                title = i['title']
 
-            font = i.get('font', self.font)
+                font = i.get('font', self.font)
 
+                font_size = font.get('font_size') if 'font-size' in font else self.font.size
+                font_family = font.get('font_family') if 'font_family' in font else self.font.name
+                bold = font.get('bold') if 'bold' in font else self.font.bold
+                italic = font.get('italic') if 'italic' in font else self.font.italic
+                underline = font.get('underline') if 'underline' in font else self.font.underline
+                color = font.get('color') if 'color' in font else self.font.color
 
-            font_size = font.get('font_size') if 'font-size' in font else self.font.size
-            font_family = font.get('font_family') if 'font_family' in font else self.font.name
-            bold = font.get('bold') if 'bold' in font else self.font.bold
-            italic = font.get('italic') if 'italic' in font else self.font.italic
-            underline = font.get('underline') if 'underline' in font else self.font.underline
-            color = font.get('color') if 'color' in font else self.font.color
+                alignment = i.get('alignment', self.alignment)
 
-            alignment = i.get('alignment', self.alignment)
+                horizontalAlign = alignment.get(
+                    'horizontal') if 'horizontal' in alignment else self.alignment.horizontal
+                verticalAlign = alignment.get('vertical') if 'vertical' in alignment else self.alignment.vertical
 
+                ws.merge_cells(cell)
+                cell_splt = cell.split(':')
+                cell_l = cell_splt[0]
+                cell_r = cell_splt[1]
 
-            horizontalAlign = alignment.get('horizontal') if 'horizontal' in alignment else self.alignment.horizontal
-            verticalAlign = alignment.get('vertical') if 'vertical' in alignment else self.alignment.vertical
+                max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
+                max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
 
-            ws.merge_cells(cell)
-            cell_splt = cell.split(':')
-            cell_l = cell_splt[0]
-            cell_r = cell_splt[1]
+                ws[cell_l] = title
 
-            max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
-            max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
+                ws[cell_l] = title
+                ws[cell_l].font = Font(name=font_family,
+                                       size=font_size,
+                                       bold=bold,
+                                       italic=italic,
+                                       underline=underline,
+                                       color=color
+                                       )
+                ws[cell_l].alignment = Alignment(horizontal=horizontalAlign,
+                                                 vertical=verticalAlign
+                                                 )
 
-            ws[cell_l] = title
-            ws[cell_l].font = Font(name=font_family,
-                                   size=font_size,
-                                   bold=bold,
-                                   italic=italic,
-                                   underline=underline,
-                                   color=color
-                                   )
-            ws[cell_l].alignment = Alignment(horizontal=horizontalAlign,
-                                             vertical=verticalAlign
-                                             )
+                # ws.column_dimensions['A'].width = 10000000
+            except Exception as e:
+                import logging
+                logger = logging.getLogger('ftpuploader')
+                logger.error('Failed: ' + str(e))
 
-            # ws.column_dimensions['A'].width = 10000000
 
         rows = dataframe_to_rows(self.df, header=False, index=False)
 
@@ -183,4 +191,5 @@ class Report:
                 ws.cell(row=r_idx + max_row, column=c_idx, value=value)
 
         wb.save(response)
+
         return response
