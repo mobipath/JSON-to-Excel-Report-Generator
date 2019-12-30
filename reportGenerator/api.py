@@ -90,6 +90,9 @@ class ExcelExport(APIView):
         # if self.request.method == "POST":
             data = self.request.data
 
+            if type(data) == str:
+                data = json.loads(data)
+
             try:
                 tableData = data["tableData"]
                 message = """cell data can be send either columnwise or rowwise. If you want to send row wise data then tableData must be a list of dictionary.
