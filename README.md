@@ -110,7 +110,7 @@ Now the data could be prepare for the api request.
 **data type = json**
 
 ```python
-excelReport = requests.post("http://excel.iofact.com/api/excel_export", json={"header": header, "df": JsonDf})
+excelReport = requests.post("http://excel.iofact.com/api/excel_export", json={"explicitColumnHeader": header, "df": JsonDf})
 ```
 
 
