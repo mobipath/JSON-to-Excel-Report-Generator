@@ -9,7 +9,7 @@ python-excel-report-generator is a microservice written in python to write an ex
 * openpyxl
 
 ### How to use this service
-The service accepts a JSON object with two keys from the post request. The first key, "header," will be a list of json object or dictionary. The header must contain the requirements of the excel report such as cell information, alignment, font. A cell information and its requirment can spcify by the following way:
+The service accepts a JSON object with two keys from the post request. The first key, either "columnHeader" or "explicitColumnHeader" will be a list of json object or dictionary. The "explicitColumnHeader" must contain the requirements of the excel report such as cell information, alignment, font. A cell information and its requirment can spcify by the following way:
 ```python
 [{
   "column": "A1:A3",
@@ -36,6 +36,50 @@ header = [{
     }
 }]
 ```
+The "columnHeader" offers a dynamic cell creation method where user can send their object in a tree structure. This can be created in the following way:
+
+```python
+head = [
+    {'title': 'A', 'key': 'a', 'style': {'font': {'font_size': '11', 'font_family': 'Calibri', 'bold': True, 'italic': False,
+                      'underline': 'none', 'color': 'FF000000'},
+             'alignment': {'horizontal': 'center', 'vertical': 'center'}}},
+    {'title': 'B', 'key': 'b',
+     'children':
+         [
+             {'title': 'C', 'key': 'c'},
+             {'title': 'X', 'key': 'x'},
+             {'title': 'D', 'key': 'd',
+              'children': [
+                  {'title': 'E', 'key': 'e'},
+                  {'title': 'F', 'key': 'f'}
+              ]
+              }
+         ],
+     },
+    {
+        'title': 'G', 'key': 'g',
+        'children': [
+             {'title': 'H', 'key': 'h'},
+             {'title': 'J', 'key': 'j'},
+             {'title': 'I', 'key': 'i',
+              'children': [
+                  {'title': 'K', 'key': 'k'},
+                  {'title': 'L', 'key': 'l',
+                   'children': [
+                        {'title': 'H', 'key': 'h'},
+                        {'title': 'J', 'key': 'j'}]
+                   }
+              ]
+              }
+        ]
+    },
+    {
+        'title': 'Z', 'key': 'z'
+    }
+]
+```
+The algorithm will automatically create the cell number for this formate. In this method, a key is required for map the data with it's key. 
+
 
 The second key is "df," where the data will send in the form of JSON, dictionary, or data frame object. A json object of dataframe could be created by the following rules:
 
