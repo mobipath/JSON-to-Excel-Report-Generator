@@ -9,6 +9,7 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 from openpyxl.utils.dataframe import dataframe_to_rows
 import re
 import json
+from django.core.cache import cache
 
 from django.http import HttpResponse
 
@@ -35,6 +36,7 @@ class Report:
 
     def __init__(self, df='', jsonObject='', header='', font='', fill='', border='', alignment='',
                  number_format='General', protection=''):
+        cache.clear()
         if type(jsonObject) == str and jsonObject != '' and type(df) != str:
             raise Exception("Multiple object send. You must send either dataframe of a JSON object")
 

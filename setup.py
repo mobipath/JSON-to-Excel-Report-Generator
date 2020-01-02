@@ -17,7 +17,7 @@ setup(
     long_description=README,
     url='https://www.example.com/',
     author='Roomey',
-    author_email='yourname@example.com',
+    author_email='roomeyrahman@gmail.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

@@ -83,7 +83,8 @@ import pandas as pd
 
 
 class ExcelDataProcessing:
-    def __init__(self, head, tableData, headType = 0, rowStart = 1):
+    def __init__(self, head, tableData, headType = 0, rowStart = 1, iter = 1):
+
         """
         :param head: will receive a list which will be the excel column headline data. Each item of the head will be a dictionary type.
         :param tableData: tabelData is the cell row value of excel report
@@ -93,7 +94,7 @@ class ExcelDataProcessing:
         if headType == 0:
             self.headDepth = self.max_depth(head)
             self.head = self.headMap(head)
-            (self.header, self.dataKeyMap) = self.headerPreparation(self.head, rowStart=rowStart)
+            (self.header, self.dataKeyMap) = self.headerPreparation(self.head, rowStart=rowStart, iter=iter)
 
         else:
             self.header = head
@@ -188,7 +189,10 @@ class ExcelDataProcessing:
         return item
 
 
-    def headerPreparation(self, head, header = list(), rowStart = 1, dataKeyMap = dict(), parent = ''):
+    def headerPreparation(self, head, header = list(), rowStart = 1, dataKeyMap = dict(), parent = '', iter = 0):
+        if iter == 1:
+            header = list()
+            dataKeyMap = dict()
         for item in head:
             if 'style' in item:
                 item['font'] = item['style'].get('font')
@@ -199,7 +203,6 @@ class ExcelDataProcessing:
                 self.headerPreparation(item['children'], header, rowStart, dataKeyMap, parent=(parent + item['key']+'.'))
             else:
                 dataKeyMap[(parent + item['key'])] = list()
-
         return (header, dataKeyMap)
 
 
