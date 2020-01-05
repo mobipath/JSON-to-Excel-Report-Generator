@@ -37,10 +37,10 @@ topHeader = [{
 }]
 
 ```
-**"columnHeader"**: columnHeader contains the column information of the excel report. Users can create a dynamic excel report with the option of cell merging using columnHeader. In this key, there is no need to tell the excel column index. However, a key parameter should be sent for mapping the data with the column.  
+**"columnHeader"**: columnHeader contains the column information of the excel report. Users can create a dynamic excel report with the option of cell merging using columnHeader. In this key, there is no need to tell the excel column index. Insted children cell (which cell need to be merged) should send in children parameter. However, a key parameter should be sent for mapping the data with the column.  
 
 ```python
-head = [
+columnHeader = [
     {'title': 'A', 'key': 'a', 'style': {'font': {'font_size': '11', 'font_family': 'Calibri', 'bold': True, 'italic': False,
                       'underline': 'none', 'color': 'FF000000'},
              'alignment': {'horizontal': 'center', 'vertical': 'center'}}},
@@ -78,6 +78,47 @@ head = [
         'title': 'Z', 'key': 'z'
     }
 ]
+```
+
+**"explicitColumnHeader"**: Explicitly define the cell index. No children paremeter will be accepted. Used method is as same as "topHeader."
+
+```python
+explicitColumnHeader = [{
+  "column": "A1:A3",
+  "title": "Cell information"
+}]
+```
+**"tableData"**: All the cell data will be send in "tableData". 
+
+#### Sample Data preparation (API testing)
+* simple Api Data
+```json
+data = { 
+   "explicitColumnHeader":[ 
+      { 
+         "column":"A1:A3",
+         "title":"Budget"
+      },
+      { 
+         "column":"B1:B3",
+         "title":"Events"
+      }
+   ],
+   "tableData":{ 
+      "Budget":[ 
+         10000,
+         15000,
+         20000
+      ],
+      "Events":[ 
+         "A",
+         "B",
+         "C"
+      ]
+   }
+}
+
+excelReport = requests.post("http://excel.iofact.com/api/excel_export", json=data)
 ```
 
 ### How to use this service
