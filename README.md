@@ -9,6 +9,78 @@ python-excel-report-generator is a microservice written in python to write an ex
 * openpyxl
 
 ### How to use this service
+**url = "http://excel.iofact.com/api/excel_export"**
+
+**request method = post**
+
+**data type = json**
+
+#### Data preparation
+**"topHeader"**: topHeader is a list of dictionary. In topHeader, user must explicitly define the cell information with column index. 
+
+```python
+topHeader = [{
+    "column": "A11:A13",
+    "title": "Cell value",
+    "font": {
+        "font_size": "11",
+        'font_family': "Calibri",
+        "bold": True,
+        "italic": False,
+        "underline": "none",
+        "color": "FF000000"
+    },
+    "alignment": {
+        "horizontal": "center",
+        "vertical": "center"
+    }
+}]
+
+```
+**"columnHeader"**: columnHeader contains the column information of the excel report. Users can create a dynamic excel report with the option of cell merging using columnHeader. In this key, there is no need to tell the excel column index. However, a key parameter should be sent for mapping the data with the column.  
+
+```python
+head = [
+    {'title': 'A', 'key': 'a', 'style': {'font': {'font_size': '11', 'font_family': 'Calibri', 'bold': True, 'italic': False,
+                      'underline': 'none', 'color': 'FF000000'},
+             'alignment': {'horizontal': 'center', 'vertical': 'center'}}},
+    {'title': 'B', 'key': 'b',
+     'children':
+         [
+             {'title': 'C', 'key': 'c'},
+             {'title': 'X', 'key': 'x'},
+             {'title': 'D', 'key': 'd',
+              'children': [
+                  {'title': 'E', 'key': 'e'},
+                  {'title': 'F', 'key': 'f'}
+              ]
+              }
+         ],
+     },
+    {
+        'title': 'G', 'key': 'g',
+        'children': [
+             {'title': 'H', 'key': 'h'},
+             {'title': 'J', 'key': 'j'},
+             {'title': 'I', 'key': 'i',
+              'children': [
+                  {'title': 'K', 'key': 'k'},
+                  {'title': 'L', 'key': 'l',
+                   'children': [
+                        {'title': 'H', 'key': 'h'},
+                        {'title': 'J', 'key': 'j'}]
+                   }
+              ]
+              }
+        ]
+    },
+    {
+        'title': 'Z', 'key': 'z'
+    }
+]
+```
+
+### How to use this service
 The service accepts a JSON object with two keys from the post request. The first key, either "columnHeader" or "explicitColumnHeader" will be a list of json object or dictionary. The "explicitColumnHeader" must contain the requirements of the excel report such as cell information, alignment, font. A cell information and its requirment can spcify by the following way:
 ```python
 [{
