@@ -134,26 +134,38 @@ class ExcelExport(APIView):
 
         max_row = -1
         try:
-            topHeader = data["topHeader"]
-            # print(topHeader)
-            if type(topHeader) != list:
-                return Response({"success": False, "message": "topHeader must be a list"}, status=status.HTTP_400_BAD_REQUEST)
+            if 'topHeader' in data:
+                topHeader = data["topHeader"]
+                print(topHeader)
+                if type(topHeader) != list:
+                    return Response({"success": False, "message": "topHeader must be a list"}, status=status.HTTP_400_BAD_REQUEST)
 
-            for item in topHeader:
-                if type(item) != dict:
-                    return Response({"success": False, "message": "topHeader's value must be a dictionary"}, status=status.HTTP_400_BAD_REQUEST)
 
-                try:
-                    cell = item["column"]
-                    cell_splt = cell.split(':')
-                    cell_l = cell_splt[0]
-                    cell_r = cell_splt[1]
+                for item in topHeader:
+                    if type(item) != dict:
+                        return Response({"success": False, "message": "topHeader's value must be a dictionary"}, status=status.HTTP_400_BAD_REQUEST)
 
-                    max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
-                    max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
-                except:
-                    return Response({"success": False, "message": "column is not specify in topHeader's value"}, status=status.HTTP_400_BAD_REQUEST)
+                    try:
+                        if 'explicitTableDataStart' in data:
 
+                            if int(data['explicitTableDataStart']) > 0:
+
+                                max_row = int(data['explicitTableDataStart'])
+                                
+                        else:      
+                            cell = item["column"]
+                            cell_splt = cell.split(':')
+                            cell_l = cell_splt[0]
+                            cell_r = cell_splt[1]
+
+                            max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
+                            max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
+                    except:
+                        return Response({"success": False, "message": "column is not specify in topHeader's value"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                if 'explicitTableDataStart' in data:
+                    if int(data['explicitTableDataStart']) > 0:
+                        max_row = int(data['explicitTableDataStart'])
         except:
             pass
 
@@ -169,9 +181,9 @@ class ExcelExport(APIView):
 
         if type(style) == str and style =='':
             if isinstance(df, pd.DataFrame):
-                reportObj = Report(df = df, header = header)
+                reportObj = Report(df = df, header = header, max_row=max_row)
             else:
-                reportObj = Report(jsonObject=df, header=header)
+                reportObj = Report(jsonObject=df, header=header,max_row=max_row)
         else:
             font = style.get('font', '')
             fill = style.get('fill', '')
@@ -180,10 +192,11 @@ class ExcelExport(APIView):
             number_format = style.get('number_formate', '')
             protection = style.get('protection', '')
 
+            print(f"max row --- {max_row}")
             if isinstance(df, pd.DataFrame):
-                reportObj = Report(df = df, header = header, font = font, fill = fill, border=border, alignment=alignment, number_format=number_format, protection=protection)
+                reportObj = Report(df = df, header = header, max_row=max_row, font = font, fill = fill, border=border, alignment=alignment, number_format=number_format, protection=protection)
             else:
-                reportObj = Report(jsonObject=df, header=header, font = font, fill = fill, border=border, alignment=alignment, number_format=number_format, protection=protection)
+                reportObj = Report(jsonObject=df, header=header, max_row=max_row, font = font, fill = fill, border=border, alignment=alignment, number_format=number_format, protection=protection)
 
 
         try:

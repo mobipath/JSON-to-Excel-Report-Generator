@@ -34,7 +34,7 @@ class Report:
                                     color='FF000000')
                     )
 
-    def __init__(self, df='', jsonObject='', header='', font='', fill='', border='', alignment='',
+    def __init__(self, df='', jsonObject='', header='', max_row=0, font='', fill='', border='', alignment='',
                  number_format='General', protection=''):
         cache.clear()
         if type(jsonObject) == str and jsonObject != '' and type(df) != str:
@@ -58,7 +58,12 @@ class Report:
                 self.header = header
             else:
                 raise Exception("Type mismatch. header must be a list.")
+        if max_row > 0:
+            self.max_row = max_row - 1
+        else:
+            self.max_row=0
 
+        
         if type(font) == str and font == '':
             self.font = Font(name='Calibri',
                              size=11,
@@ -162,8 +167,10 @@ class Report:
                 cell_l = cell_splt[0]
                 cell_r = cell_splt[1]
 
-                max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
-                max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
+                if self.max_row<=0:
+                    max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_l, re.I).groups()[1]))
+                    max_row = max(max_row, int(re.match(r"([a-z]+)([0-9]+)", cell_r, re.I).groups()[1]))
+
 
                 ws[cell_l] = title
 
@@ -185,12 +192,19 @@ class Report:
                 logger = logging.getLogger('ftpuploader')
                 logger.error('Failed: ' + str(e))
 
-
         rows = dataframe_to_rows(self.df, header=False, index=False)
-
+        
+        if self.max_row>0:
+            max_row=self.max_row
+        skip =max_row
         for r_idx, row in enumerate(rows, 1):
-            for c_idx, value in enumerate(row, 1):
-                ws.cell(row=r_idx + max_row, column=c_idx, value=value)
+            if row[0] == 'None':
+                skip+=1
+                continue
+            else:
+                for c_idx, value in enumerate(row, 1):
+                    ws.cell(row=r_idx + skip , column=c_idx, value=value)
+                    
 
         wb.save(response)
 
