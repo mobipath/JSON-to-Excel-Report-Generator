@@ -1,9 +1,9 @@
-# python-excel-report-generator
+# JSON to Excel Report Generator
 python-excel-report-generator is a microservice written in python to write an excel report in xlsx file. It is born from the lack of an existing library to write natively from Python the Office Open XML format. It can be accessed from any other programming framework using post request. 
 
 ### Framework and languages
-* Django 2.2
-* python 3.6
+* Django 4.0
+* python 3.7
 * pandas
 * Django Rest Framework
 * openpyxl
