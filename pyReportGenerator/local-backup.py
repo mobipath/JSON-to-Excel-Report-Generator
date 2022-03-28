@@ -10,4 +10,4 @@
 # }
 
 
-ALLOWED_HOSTS = ['localhost', '0.0.0.0','13.228.186.25','iofact.com', 'excel.iofact.com','127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '0.0.0.0','your-ip-address', 'your-domain-name','127.0.0.1']
