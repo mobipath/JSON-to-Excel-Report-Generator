@@ -18,3 +18,7 @@ Quick Start
 2. Include the reportGenerator URLconf in your project urls.py like this:
 
 	path('excel_export/', include('reportGenerator.urls')),
+
+
+Install Instructions:
+1. pip install -r requirments.txt

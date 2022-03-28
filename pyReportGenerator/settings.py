@@ -34,7 +34,7 @@ SECRET_KEY = 'o20l&bdqgfqjf=7&j44tna%hxyu=v=1ae(-nqaz))bv9j9e+%e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '0.0.0.0','13.126.225.188','iofact.com', 'excel.iofact.com']
+# ALLOWED_HOSTS = ['localhost', '0.0.0.0','13.228.186.25','iofact.com', 'excel.iofact.com','127.0.0.1']
 
 
 # Application definition
@@ -167,3 +167,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+
+try:
+    from .local import *
+except ImportError:
+    pass
