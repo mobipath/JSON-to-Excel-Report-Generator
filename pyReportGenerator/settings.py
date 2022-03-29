@@ -163,27 +163,14 @@ LOGGING = {
 
 # STATIC_URL = '/static/'
 
-<<<<<<< HEAD
-# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, "static"),
-# )
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 
-STATIC_URL = 'static/'
-
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "reportGenerator" ,"static"),
+)
 
 
 try:
     from .local import *
 except ImportError:
     pass
-=======
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "reportGenerator" ,"static"),
-)
->>>>>>> ac0124ebaaccfe0cacd34f88cb02fcf77f47506f
